@@ -46,7 +46,9 @@ MovingMNIST(is_train=True,
 
 ## Result
 
- ![Result](https://github.com/jhhuang96/ConvLSTM-PyTorch/tree/master/images/movingmnist.png)
+<html>
+    <img src="./images/movingmnist.png" width="640" height="128" /> 
+</html>
 
 - The first line is the real data for the first 10 frames
 - The second line is prediction of the model for the last 10 frames
