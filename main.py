@@ -26,6 +26,7 @@ from tqdm import tqdm
 import numpy as np
 from tensorboardX import SummaryWriter
 import argparse
+from utils import try_to_cuda
 
 TIMESTAMP = "2020-03-09T00-00-00"
 parser = argparse.ArgumentParser()
@@ -97,8 +98,8 @@ def train():
     '''
     main function to run the training
     '''
-    encoder = Encoder(encoder_params[0], encoder_params[1]).cuda()
-    decoder = Decoder(decoder_params[0], decoder_params[1]).cuda()
+    encoder = try_to_cuda(Encoder(encoder_params[0], encoder_params[1]))
+    decoder = try_to_cuda(Decoder(decoder_params[0], decoder_params[1]))
     net = ED(encoder, decoder)
     run_dir = './runs/' + TIMESTAMP
     if not os.path.isdir(run_dir):
@@ -124,7 +125,7 @@ def train():
         if not os.path.isdir(save_dir):
             os.makedirs(save_dir)
         cur_epoch = 0
-    lossfunction = nn.MSELoss().cuda()
+    lossfunction = try_to_cuda(nn.MSELoss())
     optimizer = optim.Adam(net.parameters(), lr=args.lr)
     pla_lr_scheduler = lr_scheduler.ReduceLROnPlateau(optimizer,
                                                       factor=0.5,

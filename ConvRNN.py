@@ -11,12 +11,14 @@
 
 import torch
 import torch.nn as nn
+from utils import try_to_cuda
 
 
 class CGRU_cell(nn.Module):
     """
     ConvGRU Cell
     """
+
     def __init__(self, shape, input_channels, filter_size, num_features):
         super(CGRU_cell, self).__init__()
         self.shape = shape
@@ -38,15 +40,15 @@ class CGRU_cell(nn.Module):
     def forward(self, inputs=None, hidden_state=None, seq_len=10):
         # seq_len=10 for moving_mnist
         if hidden_state is None:
-            htprev = torch.zeros(inputs.size(1), self.num_features,
-                                 self.shape[0], self.shape[1]).cuda()
+            htprev = try_to_cuda(torch.zeros(inputs.size(1), self.num_features,
+                                             self.shape[0], self.shape[1]))
         else:
             htprev = hidden_state
         output_inner = []
         for index in range(seq_len):
             if inputs is None:
-                x = torch.zeros(htprev.size(0), self.input_channels,
-                                self.shape[0], self.shape[1]).cuda()
+                x = try_to_cuda(torch.zeros(htprev.size(0), self.input_channels,
+                                            self.shape[0], self.shape[1]))
             else:
                 x = inputs[index, ...]
 
@@ -71,6 +73,7 @@ class CGRU_cell(nn.Module):
 class CLSTM_cell(nn.Module):
     """ConvLSTMCell
     """
+
     def __init__(self, shape, input_channels, filter_size, num_features):
         super(CLSTM_cell, self).__init__()
 
@@ -89,17 +92,17 @@ class CLSTM_cell(nn.Module):
     def forward(self, inputs=None, hidden_state=None, seq_len=10):
         #  seq_len=10 for moving_mnist
         if hidden_state is None:
-            hx = torch.zeros(inputs.size(1), self.num_features, self.shape[0],
-                             self.shape[1]).cuda()
-            cx = torch.zeros(inputs.size(1), self.num_features, self.shape[0],
-                             self.shape[1]).cuda()
+            hx = try_to_cuda(torch.zeros(inputs.size(1), self.num_features, self.shape[0],
+                             self.shape[1]))
+            cx = try_to_cuda(torch.zeros(inputs.size(1), self.num_features, self.shape[0],
+                             self.shape[1]))
         else:
             hx, cx = hidden_state
         output_inner = []
         for index in range(seq_len):
             if inputs is None:
-                x = torch.zeros(hx.size(0), self.input_channels, self.shape[0],
-                                self.shape[1]).cuda()
+                x = try_to_cuda(torch.zeros(hx.size(0), self.input_channels, self.shape[0],
+                                self.shape[1]))
             else:
                 x = inputs[index, ...]
 

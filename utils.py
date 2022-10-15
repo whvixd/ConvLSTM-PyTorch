@@ -1,5 +1,9 @@
 from torch import nn
 from collections import OrderedDict
+import torch
+
+cuda_available = torch.cuda.is_available()
+device = torch.device("cuda:0" if cuda_available else "cpu")
 
 
 def make_layers(block):
@@ -35,3 +39,11 @@ def make_layers(block):
         else:
             raise NotImplementedError
     return nn.Sequential(OrderedDict(layers))
+
+
+def try_to_cuda(data):
+    return data.cuda() if cuda_available else data
+
+
+def get_device():
+    return device

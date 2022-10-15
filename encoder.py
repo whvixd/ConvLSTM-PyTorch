@@ -10,7 +10,7 @@
 '''
 
 from torch import nn
-from utils import make_layers
+from utils import make_layers, try_to_cuda, get_device
 import torch
 import logging
 
@@ -51,8 +51,9 @@ if __name__ == "__main__":
     from net_params import convgru_encoder_params, convgru_decoder_params
     from data.mm import MovingMNIST
 
-    encoder = Encoder(convgru_encoder_params[0],
-                      convgru_encoder_params[1]).cuda()
+    encoder = try_to_cuda(Encoder(convgru_encoder_params[0],
+                                  convgru_encoder_params[1]))
+
     trainFolder = MovingMNIST(is_train=True,
                               root='data/',
                               n_frames_input=10,
@@ -63,7 +64,10 @@ if __name__ == "__main__":
         batch_size=4,
         shuffle=False,
     )
-    device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+    device = get_device()
+    print("train start...len:",len(trainLoader))
     for i, (idx, targetVar, inputVar, _, _) in enumerate(trainLoader):
         inputs = inputVar.to(device)  # B,S,1,64,64
         state = encoder(inputs)
+        print("i:%d" % (i))
+    print("train end...")

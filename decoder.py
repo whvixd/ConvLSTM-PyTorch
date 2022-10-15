@@ -10,7 +10,7 @@
 '''
 
 from torch import nn
-from utils import make_layers
+from utils import make_layers, try_to_cuda
 import torch
 
 
@@ -54,12 +54,13 @@ if __name__ == "__main__":
     from data.mm import MovingMNIST
     from encoder import Encoder
     import os
+
     os.environ["CUDA_VISIBLE_DEVICES"] = "0"
 
-    encoder = Encoder(convlstm_encoder_params[0],
-                      convlstm_encoder_params[1]).cuda()
-    decoder = Decoder(convlstm_decoder_params[0],
-                      convlstm_decoder_params[1]).cuda()
+    encoder = try_to_cuda(Encoder(convlstm_encoder_params[0],
+                                  convlstm_encoder_params[1]))
+    decoder = try_to_cuda(Decoder(convlstm_decoder_params[0],
+                                  convlstm_decoder_params[1]))
     if torch.cuda.device_count() > 1:
         encoder = nn.DataParallel(encoder)
         decoder = nn.DataParallel(decoder)
