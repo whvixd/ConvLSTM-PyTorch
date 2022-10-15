@@ -10,7 +10,7 @@
 '''
 
 from torch import nn
-from utils import make_layers, try_to_cuda, get_device
+from utils import make_layers, try_to_cuda, get_device, print_model
 import torch
 import logging
 
@@ -65,7 +65,8 @@ if __name__ == "__main__":
         shuffle=False,
     )
     device = get_device()
-    print("train start...len:",len(trainLoader))
+    print_model(encoder)
+    print("train start...len:", len(trainLoader))
     for i, (idx, targetVar, inputVar, _, _) in enumerate(trainLoader):
         inputs = inputVar.to(device)  # B,S,1,64,64
         state = encoder(inputs)

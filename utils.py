@@ -1,6 +1,7 @@
 from torch import nn
 from collections import OrderedDict
 import torch
+from torchinfo import summary
 
 cuda_available = torch.cuda.is_available()
 device = torch.device("cuda:0" if cuda_available else "cpu")
@@ -47,3 +48,6 @@ def try_to_cuda(data):
 
 def get_device():
     return device
+
+def print_model(model):
+    summary(model)
