@@ -50,7 +50,7 @@ class Decoder(nn.Module):
 
 
 if __name__ == "__main__":
-    from net_params import convlstm_encoder_params, convlstm_forecaster_params
+    from net_params import convlstm_encoder_params, convlstm_decoder_params
     from data.mm import MovingMNIST
     from encoder import Encoder
     import os
@@ -58,8 +58,8 @@ if __name__ == "__main__":
 
     encoder = Encoder(convlstm_encoder_params[0],
                       convlstm_encoder_params[1]).cuda()
-    decoder = Decoder(convlstm_forecaster_params[0],
-                      convlstm_forecaster_params[1]).cuda()
+    decoder = Decoder(convlstm_decoder_params[0],
+                      convlstm_decoder_params[1]).cuda()
     if torch.cuda.device_count() > 1:
         encoder = nn.DataParallel(encoder)
         decoder = nn.DataParallel(decoder)
