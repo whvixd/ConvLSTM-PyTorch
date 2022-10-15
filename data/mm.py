@@ -97,8 +97,9 @@ class MovingMNIST(data.Dataset):
         '''
         data = np.zeros((self.n_frames_total, self.image_size_, self.image_size_), dtype=np.float32)
         for n in range(num_digits):
-            # Trajectory
+            # Trajectory 生成轨迹
             start_y, start_x = self.get_random_trajectory(self.n_frames_total)
+            # 随机生成整数
             ind = random.randint(0, self.mnist.shape[0] - 1)
             digit_image = self.mnist[ind]
             for i in range(self.n_frames_total):
@@ -109,15 +110,16 @@ class MovingMNIST(data.Dataset):
                 # Draw digit
                 data[i, top:bottom, left:right] = np.maximum(data[i, top:bottom, left:right], digit_image)
 
+        # 在这一位置增加一个一维
         data = data[..., np.newaxis]
         return data
 
     def __getitem__(self, idx):
         length = self.n_frames_input + self.n_frames_output
         if self.is_train or self.num_objects[0] != 2:
-            # Sample number of objects
+            # Sample number of objects 随机获取数组中一个元素
             num_digits = random.choice(self.num_objects)
-            # Generate data on the fly
+            # Generate data on the fly 动态生成数据
             images = self.generate_moving_mnist(num_digits)
         else:
             images = self.dataset[:, idx, ...]
@@ -129,7 +131,10 @@ class MovingMNIST(data.Dataset):
         w = int(64 / r)
         images = images.reshape((length, w, r, w, r)).transpose(0, 2, 4, 1, 3).reshape((length, r * r, w, w))
 
+        # 取输入的图片 前10个
         input = images[:self.n_frames_input]
+
+        # 取输出的图片 后10个
         if self.n_frames_output > 0:
             output = images[self.n_frames_input:length]
         else:

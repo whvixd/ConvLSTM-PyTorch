@@ -94,3 +94,7 @@ if __name__ == "__main__":
     print(output.shape)  # S,B,1,64,64
 
     print("decoder end...")
+
+    loss_fn = torch.nn.MSELoss()
+    res = torch.autograd.gradcheck(loss_fn, (output, targetVar), eps=1e-6, raise_exception=True)
+    print(res)
