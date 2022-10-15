@@ -10,7 +10,7 @@
 '''
 
 from torch import nn
-from utils import make_layers, try_to_cuda
+from utils import make_layers, try_to_cuda,get_device
 import torch
 
 
@@ -75,7 +75,7 @@ if __name__ == "__main__":
         batch_size=8,
         shuffle=False,
     )
-    device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+    device = get_device()
     for i, (idx, targetVar, inputVar, _, _) in enumerate(trainLoader):
         inputs = inputVar.to(device)  # B,S,1,64,64
         state = encoder(inputs)

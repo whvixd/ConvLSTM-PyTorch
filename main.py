@@ -27,6 +27,7 @@ import numpy as np
 from tensorboardX import SummaryWriter
 import argparse
 from utils import try_to_cuda
+from utils import get_device
 
 TIMESTAMP = "2020-03-09T00-00-00"
 parser = argparse.ArgumentParser()
@@ -107,7 +108,7 @@ def train():
     tb = SummaryWriter(run_dir)
     # initialize the early_stopping object
     early_stopping = EarlyStopping(patience=20, verbose=True)
-    device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+    device = get_device()
 
     if torch.cuda.device_count() > 1:
         net = nn.DataParallel(net)
