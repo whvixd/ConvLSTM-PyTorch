@@ -10,7 +10,7 @@
 '''
 
 from torch import nn
-from utils import make_layers, try_to_cuda,get_device
+from utils import make_layers, try_to_cuda, get_device, print_model
 import torch
 
 
@@ -75,10 +75,22 @@ if __name__ == "__main__":
         batch_size=8,
         shuffle=False,
     )
+
     device = get_device()
+
+    print_model(encoder)
+    print_model(decoder)
+    print("encoder start...len:", len(trainLoader))
     for i, (idx, targetVar, inputVar, _, _) in enumerate(trainLoader):
         inputs = inputVar.to(device)  # B,S,1,64,64
         state = encoder(inputs)
-        break
+        print("doing...i:%d" % i)
+        break  # debug使用
+
+    print("encoder end...")
+
+    print("decoder start...")
     output = decoder(state)
     print(output.shape)  # S,B,1,64,64
+
+    print("decoder end...")
