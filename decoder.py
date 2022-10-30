@@ -67,9 +67,9 @@ if __name__ == "__main__":
 
     trainFolder = MovingMNIST(is_train=True,
                               root='data/',
-                              n_frames_input=10,
-                              n_frames_output=10,
-                              num_objects=[3])
+                              n_frames_input=10, # 取前10步
+                              n_frames_output=10, # 预测后10步
+                              num_objects=[3]) # 一个图片中生成三个数字
     trainLoader = torch.utils.data.DataLoader(
         trainFolder,
         batch_size=8,

@@ -169,6 +169,7 @@ def train():
         ######################
         with torch.no_grad():
             net.eval()
+            # tqdm进度条
             t = tqdm(validLoader, leave=False, total=len(validLoader))
             for i, (idx, targetVar, inputVar, _, _) in enumerate(t):
                 if i == 3000:
