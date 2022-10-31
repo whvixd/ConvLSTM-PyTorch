@@ -26,8 +26,7 @@ from tqdm import tqdm
 import numpy as np
 from tensorboardX import SummaryWriter
 import argparse
-from utils import try_to_cuda
-from utils import get_device
+from utils import try_to_cuda,get_device,print_model
 
 TIMESTAMP = "2020-03-09T00-00-00"
 parser = argparse.ArgumentParser()
@@ -102,9 +101,11 @@ def train():
     encoder = try_to_cuda(Encoder(encoder_params[0], encoder_params[1]))
     decoder = try_to_cuda(Decoder(decoder_params[0], decoder_params[1]))
     net = ED(encoder, decoder)
+    print_model(net)
     run_dir = './runs/' + TIMESTAMP
     if not os.path.isdir(run_dir):
         os.makedirs(run_dir)
+    # 画图
     tb = SummaryWriter(run_dir)
     # initialize the early_stopping object
     early_stopping = EarlyStopping(patience=20, verbose=True)
@@ -114,6 +115,7 @@ def train():
         net = nn.DataParallel(net)
     net.to(device)
 
+    # 断点重试
     if os.path.exists(os.path.join(save_dir, 'checkpoint.pth.tar')):
         # load existing model
         print('==> loading existing model')
