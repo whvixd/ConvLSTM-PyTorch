@@ -4,7 +4,7 @@ import torch
 from torchinfo import summary
 
 cuda_available = torch.cuda.is_available()
-device = torch.device("cuda:0" if cuda_available else "cpu")
+device = torch.device("cuda:3" if cuda_available else "cpu")
 
 
 def make_layers(block):
