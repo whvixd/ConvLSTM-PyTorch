@@ -1,7 +1,21 @@
-from torch import nn
+import os
 from collections import OrderedDict
+import argparse
 import torch
+from torch import nn
 from torchinfo import summary
+
+parser = argparse.ArgumentParser()
+
+# 使用：python main.py --gpu_device_ids 1,2,3
+parser.add_argument('--gpu_device_ids',
+                    default='0, 1, 2, 3',
+                    help='gpu device ids')
+args = parser.parse_args()
+gpu_device_list = args.gpu_device_ids
+device_ids = gpu_device_list.split(',')
+# 注：使用本地服务哪几块GPU卡
+os.environ["CUDA_VISIBLE_DEVICES"] = gpu_device_list
 
 cuda_available = torch.cuda.is_available()
 device = torch.device("cuda:3" if cuda_available else "cpu")
@@ -49,5 +63,10 @@ def try_to_cuda(data):
 def get_device():
     return device
 
+
 def print_model(model):
     summary(model)
+
+
+def get_device_ids():
+    return device_ids

@@ -9,27 +9,28 @@
 @Description:   
 '''
 
+import argparse
 import os
-os.environ["CUDA_VISIBLE_DEVICES"] = "0"
-from encoder import Encoder
-from decoder import Decoder
-from model import ED
-from net_params import convlstm_encoder_params, convlstm_decoder_params, convgru_encoder_params, convgru_decoder_params
-from data.mm import MovingMNIST
+
+import numpy as np
 import torch
+import torch.optim as optim
+from tensorboardX import SummaryWriter
 from torch import nn
 from torch.optim import lr_scheduler
-import torch.optim as optim
-import sys
-from earlystopping import EarlyStopping
 from tqdm import tqdm
-import numpy as np
-from tensorboardX import SummaryWriter
-import argparse
-from utils import try_to_cuda,get_device,print_model
+
+from data.mm import MovingMNIST
+from decoder import Decoder
+from earlystopping import EarlyStopping
+from encoder import Encoder
+from model import ED
+from net_params import convlstm_encoder_params, convlstm_decoder_params, convgru_encoder_params, convgru_decoder_params
+from utils import try_to_cuda, get_device, print_model
 
 TIMESTAMP = "2020-03-09T00-00-00"
 parser = argparse.ArgumentParser()
+
 parser.add_argument('-clstm',
                     '--convlstm',
                     help='use convlstm as base cell',
@@ -111,9 +112,11 @@ def train():
     early_stopping = EarlyStopping(patience=20, verbose=True)
     device = get_device()
 
+    print("device_count:", torch.cuda.device_count())
     if torch.cuda.device_count() > 1:
-        net = nn.DataParallel(net)
-    net.to(device)
+        net = nn.DataParallel(net, device_ids=[1, 2, 3, 4])
+    else:
+        net.to(device)
 
     # 断点重试
     if os.path.exists(os.path.join(save_dir, 'checkpoint.pth.tar')):
@@ -148,7 +151,7 @@ def train():
         ###################
         # train the model #
         ###################
-        t = tqdm(trainLoader, leave=False, total=len(trainLoader)) # 2500
+        t = tqdm(trainLoader, leave=False, total=len(trainLoader))  # 2500
         for i, (idx, targetVar, inputVar, _, _) in enumerate(t):
             inputs = inputVar.to(device)  # B,S,C,H,W (4,10,1,64,64)
             label = targetVar.to(device)  # B,S,C,H,W
@@ -183,7 +186,7 @@ def train():
                 loss_aver = loss.item() / args.batch_size
                 # record validation loss
                 valid_losses.append(loss_aver)
-                #print ("validloss: {:.6f},  epoch : {:02d}".format(loss_aver,epoch),end = '\r', flush=True)
+                # print ("validloss: {:.6f},  epoch : {:02d}".format(loss_aver,epoch),end = '\r', flush=True)
                 t.set_postfix({
                     'validloss': '{:.6f}'.format(loss_aver),
                     'epoch': '{:02d}'.format(epoch)
