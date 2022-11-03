@@ -148,9 +148,9 @@ def train():
         ###################
         # train the model #
         ###################
-        t = tqdm(trainLoader, leave=False, total=len(trainLoader))
+        t = tqdm(trainLoader, leave=False, total=len(trainLoader)) # 2500
         for i, (idx, targetVar, inputVar, _, _) in enumerate(t):
-            inputs = inputVar.to(device)  # B,S,C,H,W
+            inputs = inputVar.to(device)  # B,S,C,H,W (4,10,1,64,64)
             label = targetVar.to(device)  # B,S,C,H,W
             optimizer.zero_grad()
             net.train()

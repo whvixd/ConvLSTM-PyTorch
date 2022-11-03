@@ -1,8 +1,8 @@
 import gzip
-import math
+# import math
 import numpy as np
 import os
-from PIL import Image
+# from PIL import Image
 import random
 import torch
 import torch.utils.data as data
@@ -150,6 +150,7 @@ class MovingMNIST(data.Dataset):
         #
         # input = np.concatenate((input, np.expand_dims(pad, 1)), 1)
 
+        # 归一化处理，首先将图片数据转化为实数类型。这一步将0-255的像素值转化为0.0-1.0范围内的实数。
         output = torch.from_numpy(output / 255.0).contiguous().float()
         input = torch.from_numpy(input / 255.0).contiguous().float()
         # print()
