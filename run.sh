@@ -1,0 +1,1 @@
+nohup /root/anaconda3/envs/Pytorch/bin/python -u ./main.py > log 2>&1 &

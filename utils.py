@@ -18,6 +18,7 @@ device_ids = gpu_device_list.split(',')
 os.environ["CUDA_VISIBLE_DEVICES"] = gpu_device_list
 
 cuda_available = torch.cuda.is_available()
+# 模型参数存储的主卡
 device = torch.device("cuda:3" if cuda_available else "cpu")
 
 
