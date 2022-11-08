@@ -106,7 +106,7 @@ def train():
     run_dir = './runs/' + TIMESTAMP
     if not os.path.isdir(run_dir):
         os.makedirs(run_dir)
-    # 画图
+    # 画图 /python3.9/site-packages/tensorboard/tensorboard --logdir=~/Downloads/2020-03-09T00-00-00/
     tb = SummaryWriter(run_dir)
     # initialize the early_stopping object
     early_stopping = EarlyStopping(patience=20, verbose=True)
@@ -218,6 +218,7 @@ def train():
             'optimizer': optimizer.state_dict()
         }
         early_stopping(valid_loss.item(), model_dict, epoch, save_dir)
+        # 如果loss一直没有下降，提前结束训练
         if early_stopping.early_stop:
             print("Early stopping")
             break
